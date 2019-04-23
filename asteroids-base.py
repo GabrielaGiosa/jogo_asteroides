@@ -31,7 +31,7 @@ class Player(pygame.sprite.Sprite):
         self.image = player_img
         
         #Diminuindo a imagem
-        self.image = pygame.transform.scale(player_img(50,38))
+        self.image = pygame.transform.scale(player_img,(50,38))
         
         #Deixando a imagem transparente
         self.image.set_colorkey(BLACK)
@@ -42,7 +42,19 @@ class Player(pygame.sprite.Sprite):
         #Centraliza embaixo da tela.
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
-
+        
+        #Velocidade da nave
+        self.speedx = 0
+        
+    #Metodo que atualiza a posição da nave
+    def update(self):
+        self.rect.x += self.speedx
+        
+        #Para não sair da tela
+        if self.rect.right > WIDTH:
+            self.rect.right = WIDTH
+        if self.rect.left < 0:
+            self.rect.left = 0
 # Inicialização do Pygame.
 pygame.init()
 pygame.mixer.init()
@@ -83,7 +95,24 @@ try:
             # Verifica se foi fechado
             if event.type == pygame.QUIT:
                 running = False
-    
+            #Verifica se apertou alguma tecla
+            if event.type == pygame.KEYDOWN:
+                #Dependendo da tecla, altera a velocidade
+                if event.key == pygame.K_LEFT:
+                    player.speedx = -8
+                if event.key == pygame.K_RIGHT:
+                    player.speedx = 8
+            #Verifica se soltou alguma tecla
+            if event.type == pygame.KEYUP:
+                #dependendo da tecla, altera a velocidade
+                if event.key == pygame.K_LEFT:
+                    player.speedx = 0
+                if event.key == pygame.K_RIGHT:
+                    player.speedx = 0
+                    
+        #Depois de processar eventos
+        #Atualiza a ação de cada sprite
+        all_sprites.update()
         # A cada loop, redesenha o fundo e os sprites
         screen.fill(BLACK)
         screen.blit(background, background_rect)
